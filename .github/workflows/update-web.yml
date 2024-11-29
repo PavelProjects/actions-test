@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Repository dispatch update request
-        run: curl -X POST https://pobopo.ru/st/$ACTIONS_KEY
+        run: curl -X POST "https://pobopo.ru/st/$COMMIT_MESSAGE$ACTIONS_KEY"
         # run: |
         #   curl -L \
         #     -X POST \
