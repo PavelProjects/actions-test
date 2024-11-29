@@ -13,6 +13,12 @@ on:
         required: true
         type: string
 
+env:
+  COMMIT_MESSAGE: "${{ github.event.workflow_run.head_commit.message }}${{ inputs.commitMessage }}"
+  ACTIONS_KEY: ${{ secrets.ACTIONS_KEY }}
+
+permissions:
+  contents: write
 
 jobs:
   trigger:
@@ -20,12 +26,10 @@ jobs:
 
     steps:
       - name: Repository dispatch update request
-        env:
-          ACTIONS_KEY: ${{ secrets.ACTIONS_KEY }}
         run: |
           curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $ACTIONS_KEY" \
             https://api.github.com/repos/PavelProjects/SmartThingLib/dispatches \
-            -d '{"event_type": "ui_update", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'",  "message": "${{ github.event.workflow_run.head_commit.message }}" }}'
+            -d '{"event_type": "ui_update", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'",  "message": "$COMMIT_MESSAGE" }}'
