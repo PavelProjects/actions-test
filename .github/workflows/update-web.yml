@@ -6,7 +6,7 @@ on:
       - main
   repository_dispatch:
     types: [ui_update]
-  workflow_call:
+  workflow_dispatch:
     inputs:
       commitMessage:
         description: Commit message
