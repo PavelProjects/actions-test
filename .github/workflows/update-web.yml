@@ -10,7 +10,7 @@ on:
 
 env:
   COMMIT_MESSAGE: "${{ github.event.workflow_run.head_commit.message }}${{ inputs.commitMessage }}"
-  ACTIONS_KEY: ${{ secrets.ACTIONS_KEY }}
+  ACTIONS_SECRET: ${{ secrets.ACTIONS_SECRET }}
 
 jobs:
   trigger:
@@ -22,6 +22,6 @@ jobs:
           curl -L \
             -X POST \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $ACTIONS_KEY" \
+            -H "Authorization: Bearer $ACTIONS_SECRET" \
             https://api.github.com/repos/PavelProjects/SmartThingLib/dispatches \
             -d '{"event_type": "ui_update", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'",  "message": "$COMMIT_MESSAGE" }}'
