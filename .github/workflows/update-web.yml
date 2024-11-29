@@ -4,9 +4,17 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types: [ui_update]
+  workflow_call:
+    inputs:
+      commitMessage:
+        description: Commit message
+        required: true
+        type: string
 
 env:
-  COMMIT_MESSAGE: ${{ github.event.client_payload.message }}
+  COMMIT_MESSAGE: "${{ github.event.client_payload.message }}${{ inputs.commitMessage }}"
 
 jobs:
   update-web:
@@ -18,17 +26,3 @@ jobs:
 
     steps:
       - run: echo $COMMIT_MESSAGE
-      - name: Checkout web repository
-        uses: actions/checkout@master
-        with:
-          repository: PavelProjects/SmartThingLibWeb
-          path: ./web
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Update header header
-        working-directory: ./web
-        run: |
-          npm ci
-          npm run build-header
