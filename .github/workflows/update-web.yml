@@ -1,8 +1,9 @@
 name: Update web header
 
 on:
-  repository_dispatch:
-    types: [ui_update]
+  push:
+    branches:
+      - main
 
 env:
   COMMIT_MESSAGE: ${{ github.event.client_payload.message }}
