@@ -23,13 +23,12 @@ jobs:
         with:
           repository: PavelProjects/SmartThingLibWeb
           path: ./web
-      - run: pwd && cd ./web
-      - run: pwd
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm ci
       - name: Update header header
-        run: npm run build-header
+        working-directory: ./web
+        run: |
+          npm ci
+          npm run build-header
