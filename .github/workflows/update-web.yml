@@ -1,11 +1,11 @@
-name: Update web header
+name: Trigger lib web header update
 
 on:
-  push:
-    branches:
-      - main
-  repository_dispatch:
-    types: [ui_update]
+  workflow_run:
+    workflows: [ Validate ]
+    branches: [ "main" ]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       commitMessage:
@@ -13,16 +13,19 @@ on:
         required: true
         type: string
 
-env:
-  COMMIT_MESSAGE: "${{ github.event.client_payload.message }}${{ inputs.commitMessage }}"
 
 jobs:
-  update-web:
+  trigger:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.x]
-
     steps:
-      - run: echo $COMMIT_MESSAGE
+      - name: Repository dispatch update request
+        env:
+          ACTIONS_KEY: ${{ secrets.ACTIONS_KEY }}
+        run: |
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $ACTIONS_KEY" \
+            https://api.github.com/repos/PavelProjects/SmartThingLib/dispatches \
+            -d '{"event_type": "ui_update", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'",  "message": "${{ github.event.workflow_run.head_commit.message }}" }}'
